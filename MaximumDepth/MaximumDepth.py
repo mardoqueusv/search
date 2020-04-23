@@ -1,6 +1,7 @@
-# Python3 program to find the maximum depth of tree
+# Python3 program to find the maximum depth of Node
 
-# A binary tree node
+
+# A binary Node node
 class Node:
 
     # Constructor to create a new node
@@ -11,7 +12,45 @@ class Node:
         self.height = -1
 
 
-    # Compute the "node height" of a tree -- the number of nodes
+    def getPath(self):
+        path = []
+        if self.left:
+            path = self.left.heightPath()
+
+        path.append(self.data)
+
+        if self.right:
+            path = path + self.right.heightPath()
+
+        return path
+
+
+    def heightPath(self):
+
+        path = []
+
+        hLeft = 0
+        hRight = 0
+        if self.left is not None:
+            hLeft = self.left.height
+        if self.right is not None:
+            hRight = self.right.height
+
+        if hLeft > hRight:
+            path.append(self.data)
+            path = self.left.heightPath()
+
+        elif hRight > 0:
+            path.append(self.data)
+            path = path + self.right.heightPath()
+
+        else:
+            path = [self.data]
+
+        return path
+
+
+    # Compute the "node height" of a Node -- the number of nodes
     # along the longest path from the root node down to the
     # farthest leaf node
     def calculateHeight(self):
@@ -23,7 +62,7 @@ class Node:
 
         else:
 
-            # Compute the depth of each subtree
+            # Compute the depth of each subNode
             lDepth = 0
             if self.left is not None:
                 lDepth = self.left.calculateHeight()
@@ -76,17 +115,37 @@ def run_tests():
     root2.left.right = Node(10)
     forest.append(root2.left.right)
 
+    rDepth = 0
+    lDepth = 0
     maxDepth = 0
     maxRoot = None
     for node in forest:
-        print("Height of the node " + str(node.data))
         depth = node.calculateHeight()
-        print(" is " + str(depth))
-        if depth > maxDepth:
-            maxDepth = depth
+        lDepth = 0
+        if node.left is not None:
+            lDepth = node.left.height
+
+        rDepth = 0
+        if node.right is not None:
+            rDepth = node.right.height
+
+        if (rDepth+lDepth+1) > maxDepth:
+            maxDepth = rDepth+lDepth+1
             maxRoot = node
 
+        print("Height of the node " + str(node.data))
+        print(" is " + str(depth)+" and depth sum is " + str(rDepth+lDepth+1))
+
     print("The node with max depth is " + str(maxRoot.data)+ " and its depth is " + str(maxRoot.calculateHeight()))
+    print( " and sum depth is " + str(maxDepth))
+
+    print( "longest path is " + str(maxRoot.getPath()))
+
+
+
+
 
 if __name__ == "__main__":
     run_tests()
+
+
